@@ -1,0 +1,82 @@
+---
+title: "softwarePresentation"
+output: html_document
+---
+
+```{r}
+library("ggplot2")
+install.packages("devtools")
+devtools::install_github("dustinfife/flexplot")
+library(flexplot)
+?flexplot 
+
+```
+
+```{r}
+#univariate examples 
+histogram <- flexplot(income~1, data=exercise_data)
+barchart <- flexplot(gender~1, data=exercise_data)
+h <- ggplot(exercise_data, aes(x=income))+geom_histogram()
+b <- ggplot(exercise_data, aes(x=gender))+geom_bar()6
+
+histogram
+barchart
+h
+b
+
+#bivariate examples
+scatterplot <- flexplot(weight.loss~motivation, data = exercise_data)
+scatterplot2 <- flexplot(weight.loss~motivation, data = exercise_data, method="lm")
+logcurveplot <- flexplot(rewards~income, data = exercise_data, method="logistic")
+beeswarmplot <- flexplot(weight.loss~therapy.type, data = exercise_data, jitter=.2)
+associationplot <- flexplot(rewards~therapy.type, data = exercise_data)
+
+scatterplot
+scatterplot2
+logcurveplot
+beeswarmplot
+associationplot
+
+#multivariate examples
+data('nsduh')
+a <- flexplot(distress~major.dep, data=nsduh)
+b <- flexplot(distress~major.dep, data=nsduh, raw.data=FALSE)
+c <- flexplot(distress~major.dep, data=nsduh, alpha=.05)
+d <- flexplot(distress~major.dep, data=nsduh, sample = 200)
+cowplot::plot_grid(a,b,c,d, nrow=2)
+added.plot(weight.loss~motivation + therapy.type, data=exercise_data)
+
+fullCircle <- flexplot(weight.loss~motivation+gender, data = exercise_data, se=F,alpha=.3)
+switchVars <- flexplot(weight.loss~therapy.type+gender, data = exercise_data, se=F,alpha=.3)
+#using pipe built into flexplot
+fullUse <- flexplot(weight.loss ~ motivation + gender | satisfaction + health, data= exercise_data, method="lm", se=F, bins=2, ghost.line="black", alpha=.3,ghost.reference=list(satisfaction=0, health=10,gender="male"))+theme(axis.text.x=element_text(size=12))
+
+
+switchVars
+fullCircle
+fullUse
+switchVars
+
+```
+
+
+
+```{r cars}
+y <- exercise_data$weight.loss
+x <- data.matrix(exercise_data[, c("motivation","therapy.type")])
+#Using other methods
+model = lm(weight.loss ~ motivation + therapy.type, data = exercise_data)
+model2 = lm(weight.loss ~ motivation * therapy.type, data = exercise_data)
+visualize(model)
+estimates(model)
+model.comparison(model, model2)
+
+```
+
+```{r}
+
+
+
+
+```
+
